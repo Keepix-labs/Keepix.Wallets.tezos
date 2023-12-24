@@ -148,6 +148,23 @@ export class Wallet {
     }
   }
 
+  public async getTokenInformation(tokenAddress: string) {
+    if (!this.wallet) throw new Error('Not initialized')
+
+    try {
+      const contract = await this.wallet.contract.at(tokenAddress, tzip12)
+      const metadata = await contract.tzip12().getTokenMetadata(0)
+      return {
+        name: metadata.name,
+        symbol: metadata.symbol,
+        decimals: metadata.decimals,
+      }
+    } catch (err) {
+      console.log(err)
+      return undefined
+    }
+  }
+
   // always display the balance in 0 decimals like 1.01 RPL
   public async getTokenBalance(tokenAddress: string, walletAddress?: string) {
     if (!this.wallet) throw new Error('Not initialized')
