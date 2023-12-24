@@ -5,7 +5,7 @@ import { entropyToMnemonic, generateMnemonic } from 'bip39-light'
 import { Tzip12Module, tzip12 } from '@taquito/tzip12'
 import { BigNumber } from 'bignumber.js'
 
-type NETWORK = 'mainnet' | 'testnet'
+// type NETWORK = 'mainnet' | 'testnet'
 
 function createPrivateKey(templatePrivateKey: string, password: string) {
   const crypto = require('crypto')
@@ -29,7 +29,6 @@ function format(from: number, to: number, amount: number | string | BigNumber) {
  * Wallet class who respect the WalletLibraryInterface for Keepix
  */
 export class Wallet {
-  private networkId?: NETWORK
   private wallet?: TezosToolkit
   private mnemonic?: string
   private type?: string
@@ -41,7 +40,6 @@ export class Wallet {
   constructor() {}
 
   public async init({
-    networkId,
     password,
     mnemonic,
     privateKey,
@@ -50,7 +48,6 @@ export class Wallet {
     rpc,
     privateKeyTemplate = '0x2050939757b6d498bb0407e001f0cb6db05c991b3c6f7d8e362f9d27c70128b9',
   }: {
-    networkId: NETWORK
     password?: string
     mnemonic?: string
     privateKey?: string
@@ -62,7 +59,6 @@ export class Wallet {
     this.type = type
     this.keepixTokens = keepixTokens
     this.rpc = rpc
-    this.networkId = networkId
 
     this.wallet = new TezosToolkit(rpc)
     this.wallet.addExtension(new Tzip12Module())
@@ -72,7 +68,7 @@ export class Wallet {
       const newPrivateKey = createPrivateKey(privateKeyTemplate, password)
       this.mnemonic = entropyToMnemonic(newPrivateKey)
       this.wallet.setProvider({
-        signer: await InMemorySigner.fromMnemonic({ mnemonic: this.mnemonic }),
+        signer: await InMemorySigner.fromMnemonic({ mnemonic: this.mnemonic as string }),
       })
       this.privateKey = await this.wallet.signer.secretKey()
       this.publicKey = await this.wallet.signer.publicKey()
@@ -82,7 +78,7 @@ export class Wallet {
     if (mnemonic !== undefined) {
       this.mnemonic = mnemonic
       this.wallet.setProvider({
-        signer: await InMemorySigner.fromMnemonic({ mnemonic }),
+        signer: await InMemorySigner.fromMnemonic({ mnemonic: mnemonic as string }),
       })
       this.privateKey = await this.wallet.signer.secretKey()
       this.publicKey = await this.wallet.signer.publicKey()
@@ -101,7 +97,7 @@ export class Wallet {
     // Random
     this.mnemonic = generateMnemonic(256)
     this.wallet.setProvider({
-      signer: await InMemorySigner.fromMnemonic({ mnemonic: this.mnemonic }),
+      signer: await InMemorySigner.fromMnemonic({ mnemonic: this.mnemonic as string }),
     })
     this.privateKey = await this.wallet.signer.secretKey()
     this.publicKey = await this.wallet.signer.publicKey()
