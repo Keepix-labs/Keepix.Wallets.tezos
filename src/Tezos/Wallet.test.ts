@@ -10,7 +10,6 @@ describe('basic wallet', () => {
   it('can generate same wallet', async () => {
     const wallet = new Wallet()
     await wallet.init({
-      networkId: 'testnet',
       type: 'tezos',
       rpc: 'https://rpc.ghostnet.teztnets.xyz',
       password: '12',
@@ -23,7 +22,6 @@ describe('basic wallet', () => {
   it('can generate with Mnemonic', async () => {
     const wallet = new Wallet()
     await wallet.init({
-      networkId: 'testnet',
       type: 'tezos',
       rpc: 'https://rpc.ghostnet.teztnets.xyz',
       mnemonic,
@@ -37,7 +35,6 @@ describe('basic wallet', () => {
   it('can generate with PrivateKey', async () => {
     const wallet = new Wallet()
     await wallet.init({
-      networkId: 'testnet',
       type: 'tezos',
       rpc: 'https://rpc.ghostnet.teztnets.xyz',
       privateKey,
@@ -51,7 +48,6 @@ describe('basic wallet', () => {
   it('can generate with random', async () => {
     const wallet = new Wallet()
     await wallet.init({
-      networkId: 'testnet',
       type: 'tezos',
       rpc: 'https://rpc.ghostnet.teztnets.xyz',
     })
@@ -61,10 +57,22 @@ describe('basic wallet', () => {
     expect(wallet.getMnemonic()).toBeDefined()
   })
 
+  it('can getTokenInformation', async () => {
+    const wallet = new Wallet()
+    await wallet.init({
+      type: 'tezos',
+      rpc: 'https://rpc.ghostnet.teztnets.xyz',
+      mnemonic,
+    })
+
+    expect(
+      await wallet.getTokenInformation('KT1WNrZ7pEbpmYBGPib1e7UVCeC6GA6TkJYR'),
+    ).toEqual({ name: 'Tether USD', symbol: 'USDt', decimals: 6 })
+  })
+
   it('can getBalance', async () => {
     const wallet = new Wallet()
     await wallet.init({
-      networkId: 'testnet',
       type: 'tezos',
       rpc: 'https://rpc.ghostnet.teztnets.xyz',
       mnemonic,
@@ -75,7 +83,6 @@ describe('basic wallet', () => {
   it('can getTokenBalance', async () => {
     const wallet = new Wallet()
     await wallet.init({
-      networkId: 'testnet',
       type: 'tezos',
       rpc: 'https://rpc.ghostnet.teztnets.xyz',
       mnemonic,
@@ -89,7 +96,6 @@ describe('basic wallet', () => {
   it('can estimate sendCoin', async () => {
     const wallet = new Wallet()
     await wallet.init({
-      networkId: 'testnet',
       type: 'tezos',
       rpc: 'https://rpc.ghostnet.teztnets.xyz',
       mnemonic,
@@ -106,7 +112,6 @@ describe('basic wallet', () => {
   it('can estimate sendToken', async () => {
     const wallet = new Wallet()
     await wallet.init({
-      networkId: 'testnet',
       type: 'tezos',
       rpc: 'https://rpc.ghostnet.teztnets.xyz',
       mnemonic,
